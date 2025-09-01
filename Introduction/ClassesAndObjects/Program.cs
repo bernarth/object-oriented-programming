@@ -41,7 +41,7 @@
     // Fields (should never be public)
     private string _name = name;
     // TODO: Turn this into an enum
-    private int _priority = priority;
+    private enum _priority { High = 1, Medium = 2, Low = 3 };
 
     // Properties (public-facing)
     public string Status { get; private set; } = "Not Executed";
