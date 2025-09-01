@@ -17,7 +17,7 @@ A class defines:
 
 An object is an instance of a class - created based on the bluprint or template.
 
-> Instance: TODO: Define what is an instance in your own words.
+> Instance: TODO: Define what is an instance in your own words - An instance is a concrete object created from a class that contains state, behavior and identity.
 
 ### Note
 
