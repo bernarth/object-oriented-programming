@@ -42,7 +42,13 @@
     private string _name = name;
     // TODO: Turn this into an enum
     private int _priority = priority;
-
+   private enum PriorityEnum
+    {
+        VeryLow,
+        Low,
+        Medium,
+        High,
+    }
     // Properties (public-facing)
     public string Status { get; private set; } = "Not Executed";
 
