@@ -1,4 +1,4 @@
-﻿namespace ClassesAndObjects
+namespace ClassesAndObjects
 {
   /// <summary>
   /// Example - Class basics and benefits
@@ -36,22 +36,29 @@
     public string Status = string.Empty;
   }
 
+  public enum Priority
+  {
+    Low = 1,
+    Medium = 2,
+    High = 3,
+    Critical = 4
+  }
+
   public class TestCase(string name, int priority)
   {
     // Fields (should never be public)
     private string _name = name;
     // TODO: Turn this into an enum
-    private int _priority = priority;
+    private Priority _priority; // Constructor will need to recieve a the Priority instead of int: new TestCase("Example test", Priority.High)
 
     // Properties (public-facing)
     public string Status { get; private set; } = "Not Executed";
 
-    // public TestCase(string name, int priority)
-    // {
-    //   _name = name;
-    //   _priority = priority;
-    //   Status = "Not Executed";
-    // }
+    public TestCase(string name, int priority)
+    {
+      _name = name;
+      _priority = priority;
+    }
 
     // Fields
     // - Store raw data
