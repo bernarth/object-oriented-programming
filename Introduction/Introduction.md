@@ -19,6 +19,11 @@ An object is an instance of a class - created based on the bluprint or template.
 
 > Instance: TODO: Define what is an instance in your own words.
 
+An instance is a concrete object that has been created from a class. The class defines the structure and behavior (attributes and methods), while the instance represents a specific realization of that class with its own values stored in the attibutes.
+For example, the class `Car` is like a blueprint or a mold that describes what a car is, the brand and color. But a blueprint is not an actual car.
+An instance is when you take that blueprint and build a real car: a red Toyota, a blue Honda. Both are cars, both follow the same definition, but each one has its own details.
+So, a instance is the materialization of a class.
+
 ### Note
 
 At the end of day a class is like a test case template, and objects as the executed test cases with actual data.
