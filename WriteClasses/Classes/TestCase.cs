@@ -1,13 +1,14 @@
 namespace Classes;
 
-public class TestCase(string title, Func<Task> action, string? priority = null)
+public enum PriorityEnum { P1, P2, P3, P4 };
+public enum StatusEnum { NotRun, Passed, Failed };
+public class TestCase(string title, Func<Task> action, PriorityEnum priority = PriorityEnum.P3)
 {
   // Caracteristics
   public const int MaxTitleLength = 120;
-  private const string DefaultPriority = "P3";
-
+  public const int MaxReasonLength = 150;
   private string _title = title;
-
+  private string? _reason;
   public Guid Id { get; } = Guid.NewGuid();
   public string Title
   {
@@ -24,19 +25,31 @@ public class TestCase(string title, Func<Task> action, string? priority = null)
       _title = value.Trim();
     }
   }
-  // TODO: Change the priority to an enum: P1, P2, P3, P4. Add validations if necessary.
-  public string Priority { get; set; } = priority ?? DefaultPriority;
-  // TODO: Change the status to an enum: NotRun, Passed, Failed
-  public string Status { get; private set; } = "NotRun";
-  public string? FailureReason { get; private set; }
+  // SOLVED: Change the priority to an enum: P1, P2, P3, P4. Add validations if necessary.
+  public PriorityEnum Priority { get; set; } = priority;
+  // SOLVED: Change the status to an enum: NotRun, Passed, Failed
+  public StatusEnum Status { get; private set; }
+  public string? FailureReason
+  {
+    get => _reason; private set
+    {
+
+      if (value != null && value.Length > MaxReasonLength)
+      {
+        throw new ArgumentOutOfRangeException(nameof(FailureReason), $"Max {MaxReasonLength} chars.");
+      }
+
+      _reason = value;
+    }
+  }
   public Func<Task> Action { get; } = action ?? throw new ArgumentNullException(nameof(action));
 
   // Behavior
-  public bool IsHighPriority => Priority is "P1";
+  public bool IsHighPriority => Priority is PriorityEnum.P1;
 
-  public void MarkPassed() => Status = "Passed";
-  // TODO: Add validation for reason.
-  public void MarkFailed(string reason) => (Status, FailureReason) = ("Failed", reason);
+  public void MarkPassed() => Status = StatusEnum.Passed;
+  // SOLVED: Add validation for reason.
+  public void MarkFailed(string? reason=null) => (Status, FailureReason) = (StatusEnum.Failed, reason);
 
   public async Task ExecuteAsync()
   {
