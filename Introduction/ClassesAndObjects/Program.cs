@@ -41,7 +41,15 @@
     // Fields (should never be public)
     private string _name = name;
     // TODO: Turn this into an enum
-    private int _priority = priority;
+    private TestPriority _priority = (TestPriority)priority;
+
+    internal enum TestPriority
+    {
+      Low = 1,
+      Medium = 2,
+      High = 3,
+      Critical = 4
+    }
 
     // Properties (public-facing)
     public string Status { get; private set; } = "Not Executed";

@@ -19,6 +19,8 @@ An object is an instance of a class - created based on the bluprint or template.
 
 > Instance: TODO: Define what is an instance in your own words.
 
+R.- An instance is the actual object created from a class.
+
 ### Note
 
 At the end of day a class is like a test case template, and objects as the executed test cases with actual data.
