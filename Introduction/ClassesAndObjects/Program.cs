@@ -36,12 +36,20 @@
     public string Status = string.Empty;
   }
 
+  public enum Priority
+  {
+    Critical = 1,
+    High = 2,
+    Medium = 3,
+    Low = 4
+  }
+
   public class TestCase(string name, int priority)
   {
     // Fields (should never be public)
     private string _name = name;
     // TODO: Turn this into an enum
-    private int _priority = priority;
+    private Priority _priority = priority;
 
     // Properties (public-facing)
     public string Status { get; private set; } = "Not Executed";
