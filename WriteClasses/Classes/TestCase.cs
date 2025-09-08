@@ -1,16 +1,46 @@
 namespace Classes;
 
-public class TestCase
+public class TestCase(string title, Func<Task> action, string? priority = null)
 {
-  public required int Id { get; init; }
-  public required string Name { get; set; }
-  public required IEnumerable<string> Steps { get; set; }
+  // Caracteristics
+  public const int MaxTitleLength = 120;
+  private const string DefaultPriority = "P3";
 
-  public void Execute()
+  private string _title = title;
+
+  public Guid Id { get; } = Guid.NewGuid();
+  public string Title
   {
-    Console.WriteLine($"Executing Test Case: {Name}");
-    Console.WriteLine($"Steps: \n {string.Join('\n', Steps)} \n");
-    Console.WriteLine($"Result: PASS✅");
-    // Id = 12; // This cannot be modified because of the init
+    get => _title;
+    set
+    {
+      ArgumentException.ThrowIfNullOrWhiteSpace(value);
+
+      if (value.Length > MaxTitleLength)
+      {
+        throw new ArgumentOutOfRangeException(nameof(Title), $"Max {MaxTitleLength} chars.");
+      }
+
+      _title = value.Trim();
+    }
+  }
+  // TODO: Change the priority to an enum: P1, P2, P3, P4. Add validations if necessary.
+  public string Priority { get; set; } = priority ?? DefaultPriority;
+  // TODO: Change the status to an enum: NotRun, Passed, Failed
+  public string Status { get; private set; } = "NotRun";
+  public string? FailureReason { get; private set; }
+  public Func<Task> Action { get; } = action ?? throw new ArgumentNullException(nameof(action));
+
+  // Behavior
+  public bool IsHighPriority => Priority is "P1";
+
+  public void MarkPassed() => Status = "Passed";
+  // TODO: Add validation for reason.
+  public void MarkFailed(string reason) => (Status, FailureReason) = ("Failed", reason);
+
+  public async Task ExecuteAsync()
+  {
+    await Action();
+    // we can have logic here to grab the logs or something.
   }
 }
