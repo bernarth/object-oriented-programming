@@ -18,6 +18,9 @@ A class defines:
 An object is an instance of a class - created based on the bluprint or template.
 
 > Instance: TODO: Define what is an instance in your own words.
+> Answer: An instance can be considered as an example or a single occurence or case of something. 
+In OOP it is applied to say that an object is an instance of a class. In other words, that an
+object is a single example or occurrency of a class (template with specific behaviors)
 
 ### Note
 
