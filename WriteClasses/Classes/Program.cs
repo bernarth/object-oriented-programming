@@ -1,6 +1,8 @@
-﻿
+﻿using Classes.Login;
 // BAD: Using just variables without a class
-int testId = 1;
+using Classes;
+
+//int testId = 1;
 string testName = "Login with valid credentials";
 IEnumerable<string> testSteps =
 [
@@ -14,3 +16,10 @@ Console.WriteLine($"Executing {testName}");
 // - Code duplication
 // - No structure (everything is loose variables)
 // - Hard to maintain
+
+var test = new ApiTest();
+
+// Having more cohesion and less coupling
+
+var loginPage = new LoginPage(new SeleniumDriver());
+loginPage.Login("user", "secret");

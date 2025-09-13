@@ -62,3 +62,55 @@ public class ApiClient
   public ApiClient(string baseUrl, int timeout, string key) {}
 }
 ```
+
+# Access modifiers
+
+## Definition
+
+Access modifiers in C# are **keywords** that define the **visibility** and **accessibility** of classes, methods, variables, and other members
+
+> In general they define the visbility and accessibility.
+
+They are important because:
+
+- Protect data and prevent accidental misuse.
+- Improve maintainability and security by controlling who can access what.
+- Define clear boundaries between the different parts of the solution.
+- [ Enforce encapsulation; part of the OOP pillars ]
+
+## Notes:
+
+- Default values:
+  - If you don't specify, class members are `private`
+  - Top-level classes are internal
+
+- Best practice: Start with the most restrictive modifier (`private`)
+
+# Coupling and Cohesion
+
+## Cohesion
+
+- Refers to how focused and unified a class is on doing one well-defined job.
+- A highly cohesive class has methods and attributes that are directly related to each other and to the class's purpose (context)
+- Low cohesion means the class tries to do too many unrelated things. Exmple: God Class
+
+## Coupling
+
+- Refers to how much a class depends on other class (methods as well)
+- Tight coupling: A class knows too much about the details of other classes, this means it might be hard to maintain or test.
+- Loose coupling: A class only knows what it needs to know (we can apply with: interfaces, abstractions, or clean code in general). This makes the code easier to modify, test, or replace without breaking other classes.
+
+Good design = High Cohesion + Low Coupling
+
+## Example
+
+Imagine you are writting an automation framework for testing a web application.
+
+- A high cohesive class could be a LoginPage class that only deals with login functionality: entering user, entering password, clicking login.
+
+- Loose coupling: Your LoginPage depends only on a WebDriver interface to interact with the browser.
+
+## Notes
+
+- Your classes, methods and members in general should be open for extension but closed for modification.
+- If you notice that you are duplicating your code it might mean that you have a high coupling.
