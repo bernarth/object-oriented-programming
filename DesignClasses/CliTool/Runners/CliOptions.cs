@@ -17,20 +17,25 @@ public sealed class CliOptions
     // TODO: Enhance this if/else calls
     foreach (var argument in args)
     {
-      if (argument.Equals("--list", StringComparison.OrdinalIgnoreCase))
+      const string TEMPLATE = "--template=";
+      const string PURPOSE = "--purpose=";
+
+      switch (argument)
       {
+        case var a when a.Equals("--list", StringComparison.OrdinalIgnoreCase):
         output.ListTemplates = true;
-      }
-      else if (argument.StartsWith("--template=", StringComparison.OrdinalIgnoreCase))
-      {
-        output.TemplateId = argument.Split('=', 2)[1];
-      }
-      else if (argument.StartsWith("--purpose=", StringComparison.OrdinalIgnoreCase))
-      {
-        output.Purpose = argument.Split('=', 2)[1];
+        break;
+
+        case var a when a.StartsWith(TEMPLATE, StringComparison.OrdinalIgnoreCase):
+        output.TemplateId = a.Substring(TEMPLATE.Length);
+        break;
+
+        case var a when a.StartsWith(PURPOSE, StringComparison.OrdinalIgnoreCase):
+        output.Purpose = a.Substring(PURPOSE.Length);
+        break;
       }
     }
-
+    
     return output;
   }
 }
