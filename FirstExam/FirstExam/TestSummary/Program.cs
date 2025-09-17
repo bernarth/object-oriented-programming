@@ -4,40 +4,66 @@ using System.IO;
 using System.Linq;
 using Microsoft.VisualBasic;
 
-// Intentionally tiny and messy; students will refactor to OOP.
-string filePath = "test-results.csv";
+var testApp = new TestSummaryApp();
+testApp.Run(args);
 
-bool notify = false;
-
-for (int i = 0; i < args.Length; i++)
+public class TestSummaryApp
 {
-  if (args[i] == "--file" && i + 1 < args.Length)
+  private readonly TestResultFileParser _parser;
+  private readonly TestResultsAnalyzer _analyzer;
+  private readonly ResultsReporter _reporter;
+
+  public TestSummaryApp()
   {
-    filePath = args[i + 1];
+    _parser = new TestResultFileParser();
+    _analyzer = new TestResultsAnalyzer();
+    _reporter = new ResultsReporter();
   }
 
-  if (args[i] == "--notify")
+  public void Run(string[] args)
   {
-    notify = true;
+    var (filePath, notify) = ParseCommandLineArgs(args);
+
+    if (!File.Exists(filePath))
+    {
+      Console.WriteLine("FILE_NOT_FOUND " + filePath);
+      return;
+    }
+
+    try
+    {
+      var lines = File.ReadAllLines(filePath);
+      var testResults = _parser.ParseCsv(lines);
+      _analyzer.Analyze(testResults);
+      _reporter.PrintSummary(filePath, _analyzer, notify);
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"Error processing file: {ex.Message}");
+    }
+  }
+
+  private (string filePath, bool notify) ParseCommandLineArgs(string[] args)
+  {
+    string filePath = "test-results.csv";
+    bool notify = false;
+
+    for (int i = 0; i < args.Length; i++)
+    {
+      if (args[i] == "--file" && i + 1 < args.Length)
+      {
+        filePath = args[i + 1];
+      }
+
+      if (args[i] == "--notify")
+      {
+        notify = true;
+      }
+    }
+
+    return (filePath, notify);
   }
 }
-
-if (!File.Exists(filePath))
-{
-  Console.WriteLine("FILE_NOT_FOUND " + filePath);
-  return;
-}
-
-// Globals / shared mutable state (bad on purpose)
-var lines = File.ReadAllLines(filePath);
-var parser = new TestResultFileParser();
-var testResults = parser.ParseCsv(lines);
-
-var analyzer = new TestResultsAnalyzer();
-analyzer.Analyze(testResults);
-
-var reporter = new ResultsReporter();
-reporter.PrintSummary(filePath, analyzer, notify);
 
 public class TestResult
 {
