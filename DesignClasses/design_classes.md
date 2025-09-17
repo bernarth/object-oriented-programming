@@ -1,25 +1,31 @@
 # Design classes
 
-## Test-automation Mini-framework 
+## Example - CLI tool (CLI - Command line interface)
 
-This system demonstrates pieces that we can reuse to automate testing cases.
+As a user, I want a CLI that scaffolds a clean test case (name, purpose, steps) from reusable templates and exports it (console/markdown).
 
-What we are going to build are the following steps:
+What the CLI does:
 
-- `TestStep` - a simple action like "Click login button" or "Send GET `/health`"
+- The inforamtion for the test suites will be already available*
+- Choose a template (e.g. "web-login", "api-health")
+- Generate a TestCase with structured steps (actions/assertions)
+- Optionally add the case to a TestSuite
+- Export the result to console and/or Markdown file that you can paste into your board
 
-- `TestCase` (base) - runnable test with a name and steps.
+What we need:
 
-- `WebTestCase` & `ApiTestCase` - specialization that add tiny, data (`Url`, `Endpoint`)
+- TestCase
+- ActionStep
+- AssertStep
+- TestSuite
+- TestCaseDocument
+- DocumentSection
 
-- `TestSuite` - a collection of test cases you run together (example: `Smoke Suite`)
+- Template
+- TemplateLibrary
+- TestCaseBuilder
 
-- `IReporter` - an interface for outputting results (HTML, JSON, XML, etc)
+- ConsoleExporter
+- MarkdownFileExporter
 
-- `Report` & `ReportSection` - the final document of a run.
-
-- `Logger` - simple logging service
-
-- `TestRunner` - orchestrates running a suite.
-
-- `Program` - wires everything so you can run and demo each test suite.
+- CliRunner
