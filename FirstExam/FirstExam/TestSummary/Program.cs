@@ -14,7 +14,7 @@ for (int i = 0; i < args.Length; i++)
   {
     filePath = args[i + 1];
   }
-  
+
   if (args[i] == "--notify")
   {
     notify = true;
@@ -29,12 +29,7 @@ if (!File.Exists(filePath))
 
 // Globals / shared mutable state (bad on purpose)
 var lines = File.ReadAllLines(filePath).ToList();
-var rows = new List<string[]>();
-int total = 0;
-int passed = 0;
-int failed = 0;
-var failingTests = new List<string>();
-var seenFail = new HashSet<string>();
+var testResults = new List<TestResult>();
 
 // Poor man's CSV (no quoting, no culture handling)
 for (int i = 0; i < lines.Count; i++)
@@ -49,28 +44,36 @@ for (int i = 0; i < lines.Count; i++)
     continue;
   }
 
-  rows.Add(parts);
+  testResults.Add(new TestResult
+  {
+    Suite = parts[0].Trim(),
+    TestName = parts[1].Trim(),
+    Status = parts[2].Trim(),
+    Duration = parts[3].Trim(),
+    Timestamp = parts[4].Trim(),
+  });
 }
 
+int total = 0;
+int passed = 0;
+int failed = 0;
+var failingTests = new List<string>();
+var seenFail = new HashSet<string>();
+
 // Mix parsing, counting, and output concerns in one place
-foreach (var r in rows)
+foreach (var result in testResults)
 {
   total++;
-  var suite = r[0].Trim();
-  var test = r[1].Trim();
-  var status = r[2].Trim().ToUpperInvariant();
-  // duration (r[3]) and timestamp (r[4]) ignored in this tiny version
 
-  if (status == "PASS") passed++;
-  else if (status == "FAIL")
+  if (result.Status == "PASS") passed++;
+  else if (result.Status == "FAIL")
   {
     failed++;
-    var key = suite + "/" + test;
 
-    if (!seenFail.Contains(key))
+    if (!seenFail.Contains(result.UniqueKey))
     {
-      failingTests.Add(key);
-      seenFail.Add(key);
+      failingTests.Add(result.UniqueKey);
+      seenFail.Add(result.UniqueKey);
     }
   }
 }
@@ -99,4 +102,14 @@ if (notify)
 {
   Console.WriteLine();
   Console.WriteLine("NOTIFY => #qa-alerts | failed=" + failed + " | unique failing tests=" + failingTests.Count);
+}
+
+public class TestResult
+{
+  public string? Suite { get; set; }
+  public string? TestName { get; set; }
+  public string? Status { get; set; }
+  public string? Duration { get; set; }
+  public string? Timestamp { get; set; }
+  public string UniqueKey => $"{Suite}/{TestName}";
 }
