@@ -1,25 +1,29 @@
-﻿string filePath = "test-results.csv";
+﻿// NOTE: This should be inside Reader Class
+// string filePath = "test-results.csv";
 
-bool notify = false;
+// bool notify = false;
 
-for (int i = 0; i < args.Length; i++)
-{
-  if (args[i] == "--file" && i + 1 < args.Length)
-  {
-    filePath = args[i + 1];
-  }
+// for (int i = 0; i < args.Length; i++)
+// {
+//   if (args[i] == "--file" && i + 1 < args.Length)
+//   {
+//     filePath = args[i + 1];
+//   }
 
-  if (args[i] == "--notify")
-  {
-    notify = true;
-  }
-}
+//   if (args[i] == "--notify")
+//   {
+//     notify = true;
+//   }
+// }
 
-if (!File.Exists(filePath))
-{
-  Console.WriteLine("FILE_NOT_FOUND " + filePath);
-  return;
-}
+// if (!File.Exists(filePath))
+// {
+//   Console.WriteLine("FILE_NOT_FOUND " + filePath);
+//   return;
+// }
+
+var reader = Reader.AppReader(args);
+filePath = reader.FilePath;
 
 // Globals / shared mutable state (bad on purpose)
 var lines = File.ReadAllLines(filePath).ToList();
@@ -47,6 +51,7 @@ for (int i = 0; i < lines.Count; i++)
 }
 
 // Mix parsing, counting, and output concerns in one place
+//NOTE: This should be inside TestCase class method
 foreach (var r in rows)
 {
   total++;
