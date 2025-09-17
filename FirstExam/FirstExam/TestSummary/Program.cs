@@ -1,107 +1,148 @@
-﻿string filePath = "test-results.csv";
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
-bool notify = false;
 
-for (int i = 0; i < args.Length; i++)
+namespace TestSummary
 {
-  if (args[i] == "--file" && i + 1 < args.Length)
+  public class Program
   {
-    filePath = args[i + 1];
-  }
-
-  if (args[i] == "--notify")
-  {
-    notify = true;
-  }
-}
-
-if (!File.Exists(filePath))
-{
-  Console.WriteLine("FILE_NOT_FOUND " + filePath);
-  return;
-}
-
-// Globals / shared mutable state (bad on purpose)
-var lines = File.ReadAllLines(filePath).ToList();
-var rows = new List<string[]>();
-int total = 0;
-int passed = 0;
-int failed = 0;
-var failingTests = new List<string>();
-var seenFail = new HashSet<string>();
-
-// Poor man's CSV (no quoting, no culture handling)
-for (int i = 0; i < lines.Count; i++)
-{
-  var l = lines[i].Trim();
-
-  if (l.Length == 0)
-  {
-    continue; // skip empty lines
-  }
-  
-  if (i == 0 && l.StartsWith("Suite,TestName,Status"))
-  {
-    continue; // skip header
-  }
-
-  var parts = l.Split(',');
-
-  if (parts.Length < 5)
-  {
-    continue;
-  }
-
-  rows.Add(parts);
-}
-
-// Mix parsing, counting, and output concerns in one place
-foreach (var r in rows)
-{
-  total++;
-  var suite = r[0].Trim();
-  var test = r[1].Trim();
-  var status = r[2].Trim().ToUpperInvariant();
-
-  if (status == "PASS")
-  {
-    passed++;
-  }
-  else if (status == "FAIL")
-  {
-    failed++;
-    var key = suite + "/" + test;
-
-    if (!seenFail.Contains(key))
+    public static void Main(string[] args)
     {
-      failingTests.Add(key);
-      seenFail.Add(key);
+      var options = CommandLineOptions.Parse(args);
+      if (!File.Exists(options.FilePath))
+      {
+        Console.WriteLine("FILE_NOT_FOUND " + options.FilePath);
+      }
+
+      var rows = CsvReader.Read(options.FilePath);
+      var summary = TestSummaryCalculator.Calculate(rows);
+
+      Reporter.Print(options.FilePath, summary, options.Notify);
     }
   }
-}
 
-Console.WriteLine("==== Test Summary ====");
-Console.WriteLine("File: " + filePath);
-Console.WriteLine("Total: " + total);
-Console.WriteLine("Passed: " + passed);
-Console.WriteLine("Failed: " + failed);
-Console.WriteLine();
-Console.WriteLine("Failing Tests:");
-
-if (failingTests.Count == 0)
-{
-  Console.WriteLine("(none)");
-}
-else
-{
-  foreach (var t in failingTests.OrderBy(x => x))
+  public class CommandLineOptions
   {
-    Console.WriteLine("- " + t);
-  }
-}
+    public string FilePath { get; private set; } = "test-results.csv";
+    public bool Notify { get; private set; }
 
-if (notify)
-{
-  Console.WriteLine();
-  Console.WriteLine("NOTIFY => #qa-alerts | failed=" + failed + " | unique failing tests=" + failingTests.Count);
+    public static CommandLineOptions Parse(string[] args)
+    {
+      var opts = new CommandLineOptions();
+      for (int i = 0; i < args.Length; i++)
+      {
+        if (args[i] == "--file" && i + 1 < args.Length)
+        {
+          opts.FilePath = args[i + 1];
+        }
+
+        if (args[i] == "--notify")
+        {
+          opts.Notify = true;
+        }
+      }
+      return opts;
+    }
+  }
+
+  public static class CsvReader
+  {
+    public static List<string[]> Read(string filePath)
+    {
+      var lines = File.ReadAllLines(filePath).ToList();
+      var rows = new List<string[]>();
+      for (int i = 0; i < lines.Count; i++)
+      {
+        var l = lines[i].Trim();
+        if (l.Length == 0) continue;
+        if (i == 0 && l.StartsWith("Suite,TestName,Status")) continue; // skip header
+        var parts = l.Split(',');
+
+        if (parts.Length < 5)
+        {
+          continue;
+        }
+
+        rows.Add(parts);
+      }
+      return rows;
+    }
+  }
+
+  public class TestSummaryResult
+  {
+    public int Total { get; set; }
+    public int Passed { get; set; }
+    public int Failed { get; set; }
+    public List<string> FailingTests { get; set; } = new();
+  }
+
+  public static class TestSummaryCalculator
+  {
+    public static TestSummaryResult Calculate(IEnumerable<string[]> rows)
+    {
+      int total =0, passed =0, failed = 0;
+      var failingTests = new List<string>();
+      var seenFail = new HashSet<string>();
+      foreach (var r in rows)
+      {
+        total++;
+        var suite = r[0].Trim();
+        var test = r[1].Trim();
+        var status = r[2].Trim().ToUpperInvariant();
+
+        if (status == "PASS") passed++;
+        else if (status == "FAIL")
+        {
+          failed++;
+          var key = suite + "/" + test;
+
+          if (!seenFail.Contains(key))
+          {
+            failingTests.Add(key);
+            seenFail.Add(key);
+          }
+        }
+      }
+      return new TestSummaryResult
+      {
+        Total = total,
+        Passed = passed,
+        Failed = failed,
+        FailingTests = failingTests.OrderBy(x=>x).ToList()
+      };
+    }
+  }
+
+  public static class Reporter
+  {
+    public static void Print(string filePath, TestSummaryResult summary, bool notify)
+    {
+      Console.WriteLine("==== Test Summary ====");
+      Console.WriteLine("File: " + filePath);
+      Console.WriteLine("Total: " + summary.Total);
+      Console.WriteLine("Passed: " + summary.Passed);
+      Console.WriteLine("Failed: " + summary.Failed);
+      Console.WriteLine();
+      Console.WriteLine("Failing Tests:");
+      if (summary.FailingTests.Count == 0)
+      {
+        Console.WriteLine("(none)");
+      }
+      else
+      {
+        foreach (var t in summary.FailingTests)
+        {
+          Console.WriteLine("- " + t);
+        }
+      }
+      if (notify)
+      {
+        Console.WriteLine();
+        Console.WriteLine("NOTIFY => #qa-alerts | failed=" + summary.Failed + " | unique failing tests=" + summary.FailingTests.Count);
+      }
+    }
+  }
 }
