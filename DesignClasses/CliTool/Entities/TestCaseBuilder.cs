@@ -1,12 +1,14 @@
 namespace CliTool.Entities;
 
-public static class TestCaseBuilder
+public class TestCaseBuilder(TemplateLibrary library)
 {
-  public static TestCase BuildFromTemplate(TemplateLibrary library, string templateId, string name, string? purposeOverride = null)
+  private readonly TemplateLibrary _library = library;
+
+  public TestCase BuildFromTemplate(string templateId, string name, string? purposeOverride = null)
   {
-    if (!library.TryGet(templateId, out var template) || template is null)
+    if (!_library.TryGet(templateId, out var template) || template is null)
     {
-      throw new InvalidOperationException($"Unknown template {templateId}. List the templates");
+      throw new InvalidOperationException($"Unknown template {templateId}. Use --list to list the templates");
     }
 
     var testCase = template.Factory(name);
