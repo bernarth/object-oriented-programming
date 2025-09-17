@@ -28,31 +28,9 @@ if (!File.Exists(filePath))
 }
 
 // Globals / shared mutable state (bad on purpose)
-var lines = File.ReadAllLines(filePath).ToList();
-var testResults = new List<TestResult>();
-
-// Poor man's CSV (no quoting, no culture handling)
-for (int i = 0; i < lines.Count; i++)
-{
-  var l = lines[i].Trim();
-  if (l.Length == 0) continue;
-  if (i == 0 && l.StartsWith("Suite,TestName,Status")) continue; // skip header
-  var parts = l.Split(',');
-
-  if (parts.Length < 5)
-  {
-    continue;
-  }
-
-  testResults.Add(new TestResult
-  {
-    Suite = parts[0].Trim(),
-    TestName = parts[1].Trim(),
-    Status = parts[2].Trim(),
-    Duration = parts[3].Trim(),
-    Timestamp = parts[4].Trim(),
-  });
-}
+var lines = File.ReadAllLines(filePath);
+var parser = new TestResultFileParser();
+var testResults = parser.ParseCsv(lines);
 
 int total = 0;
 int passed = 0;
@@ -112,4 +90,33 @@ public class TestResult
   public string? Duration { get; set; }
   public string? Timestamp { get; set; }
   public string UniqueKey => $"{Suite}/{TestName}";
+}
+
+public class TestResultFileParser
+{
+  public List<TestResult> ParseCsv(string[] lines)
+  {
+    var results = new List<TestResult>();
+
+    for (int i = 0; i < lines.Length; i++)
+    {
+      var line = lines[i].Trim();
+      if (line.Length == 0) continue;
+      if (i == 0 && line.StartsWith("Suite,TestName,Status")) continue;
+
+      var parts = line.Split(',');
+      if (parts.Length < 5) continue;
+
+      results.Add(new TestResult
+      {
+        Suite = parts[0].Trim(),
+        TestName = parts[1].Trim(),
+        Status = parts[2].Trim().ToUpperInvariant(),
+        Duration = parts[3].Trim(),
+        Timestamp = parts[4].Trim(),
+      });
+    }
+
+    return results;
+  }
 }
