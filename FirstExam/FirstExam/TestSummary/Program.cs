@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.VisualBasic;
 
 // Intentionally tiny and messy; students will refactor to OOP.
 string filePath = "test-results.csv";
@@ -35,31 +36,8 @@ var testResults = parser.ParseCsv(lines);
 var analyzer = new TestResultsAnalyzer();
 analyzer.Analyze(testResults);
 
-Console.WriteLine("==== Test Summary ====");
-Console.WriteLine("File: " + filePath);
-Console.WriteLine("Total: " + analyzer.Total);
-Console.WriteLine("Passed: " + analyzer.Passed);
-Console.WriteLine("Failed: " + analyzer.Failed);
-Console.WriteLine();
-Console.WriteLine("Failing Tests:");
-
-if (analyzer.FailingTests.Count == 0)
-{
-  Console.WriteLine("(none)");
-}
-else
-{
-  foreach (var t in analyzer.FailingTests)
-  {
-    Console.WriteLine("- " + t);
-  }
-}
-
-if (notify)
-{
-  Console.WriteLine();
-  Console.WriteLine("NOTIFY => #qa-alerts | failed=" + analyzer.Failed + " | unique failing tests=" + analyzer.FailingTests.Count);
-}
+var reporter = new ResultsReporter();
+reporter.PrintSummary(filePath, analyzer, notify);
 
 public class TestResult
 {
@@ -120,5 +98,38 @@ public class TestResultsAnalyzer
       .Where(key => seenFail.Add(key))
       .OrderBy(key => key)
       .ToList();
+  }
+}
+
+public class ResultsReporter
+{
+  public void PrintSummary(string filePath, TestResultsAnalyzer analyzer, bool notify)
+  {
+    Console.WriteLine("==== Test Summary ====");
+    Console.WriteLine("File: " + filePath);
+    Console.WriteLine("Total: " + analyzer.Total);
+    Console.WriteLine("Passed: " + analyzer.Passed);
+    Console.WriteLine("Failed: " + analyzer.Failed);
+    Console.WriteLine();
+    Console.WriteLine("Failing Tests:");
+
+    if (analyzer.FailingTests.Count == 0)
+    {
+      Console.WriteLine("(none)");
+    }
+    else
+    {
+      foreach (var test in analyzer.FailingTests)
+      {
+        Console.WriteLine("- " + test);
+      }
+    }
+
+    if (notify)
+    {
+      Console.WriteLine();
+      Console.WriteLine("NOTIFY => #qa-alerts | failed=" + analyzer.Failed +
+                       " | unique failing tests=" + analyzer.FailingTests.Count);
+    }
   }
 }
