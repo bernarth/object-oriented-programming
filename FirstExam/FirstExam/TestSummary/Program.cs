@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-// Intentionally tiny and messy; students will refactor to OOP.
-string filePath = "test-results.csv";
+﻿string filePath = "test-results.csv";
 
 bool notify = false;
 
@@ -14,7 +8,7 @@ for (int i = 0; i < args.Length; i++)
   {
     filePath = args[i + 1];
   }
-  
+
   if (args[i] == "--notify")
   {
     notify = true;
