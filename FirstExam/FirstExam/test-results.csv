@@ -1,0 +1,7 @@
+Suite,TestName,Status,DurationMs,Timestamp
+Login,Can_Login_With_Valid_User,PASS,120,2025-09-12T12:00:01Z
+Login,Cannot_Login_With_Locked_User,FAIL,95,2025-09-12T12:00:02Z
+Search,Can_Filter_By_Price,PASS,640,2025-09-12T12:00:03Z
+Checkout,Shows_Taxes_In_Summary,FAIL,1450,2025-09-13T14:00:00Z
+Checkout,Shows_Taxes_In_Summary,FAIL,1510,2025-09-14T14:00:00Z
+Reports,Exports_CSV,PASS,2100,2025-09-14T09:33:00Z

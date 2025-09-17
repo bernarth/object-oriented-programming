@@ -25,9 +25,25 @@ public sealed class CliOptions
       {
         output.TemplateId = argument.Split('=', 2)[1];
       }
+      else if (argument.StartsWith("--name=", StringComparison.OrdinalIgnoreCase))
+      {
+        output.Name = argument.Split('=', 2)[1];
+      }
       else if (argument.StartsWith("--purpose=", StringComparison.OrdinalIgnoreCase))
       {
         output.Purpose = argument.Split('=', 2)[1];
+      }
+      else if (argument.StartsWith("--suite=", StringComparison.OrdinalIgnoreCase))
+      {
+        output.Suite = argument.Split('=', 2)[1];
+      }
+      else if (argument.StartsWith("--export=", StringComparison.OrdinalIgnoreCase))
+      {
+        output.Exporter = argument.Split('=', 2)[1].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+      }
+      else if (argument.StartsWith("--out=", StringComparison.OrdinalIgnoreCase))
+      {
+        output.OutPath = argument.Split('=', 2)[1];
       }
     }
 
