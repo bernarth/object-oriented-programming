@@ -14,83 +14,85 @@ for (int i = 0; i < args.Length; i++)
     notify = true;
   }
 }
-
-if (!File.Exists(filePath))
-{
-  Console.WriteLine("FILE_NOT_FOUND " + filePath);
-  return;
+var file=new FileReader();
+if !file.FileExist(){
+Console.WriteLine(file.ErrorMessage); 
 }
+var content = file.ReadFile();
 
-// Globals / shared mutable state (bad on purpose)
-var lines = File.ReadAllLines(filePath).ToList();
-var rows = new List<string[]>();
-int total = 0;
-int passed = 0;
-int failed = 0;
-var failingTests = new List<string>();
-var seenFail = new HashSet<string>();
 
-// Poor man's CSV (no quoting, no culture handling)
-for (int i = 0; i < lines.Count; i++)
+
+// Classes
+
+public class FileReader(string filePath="test-results.csv")
 {
-  var l = lines[i].Trim();
-  if (l.Length == 0) continue;
-  if (i == 0 && l.StartsWith("Suite,TestName,Status")) continue; // skip header
-  var parts = l.Split(',');
+  private readonly string _filePath = filePath;
+  public  string ErrorMessage {get; set;}
 
-  if (parts.Length < 5)
+  public List<string> ReadFile()
   {
-    continue;
+    return File.ReadAllLines(_filePath).ToList();
   }
 
-  rows.Add(parts);
+  public bool FileExist()
+  {
+    this.ErrorMessage= File.Exists(_filePath)? "": "FILE_NOT_FOUND " + _filePath;
+    return File.Exists(_filePath);  
+  }
 }
 
-// Mix parsing, counting, and output concerns in one place
-foreach (var r in rows)
+public class TestResult
 {
-  total++;
-  var suite = r[0].Trim();
-  var test = r[1].Trim();
-  var status = r[2].Trim().ToUpperInvariant();
-  // duration (r[3]) and timestamp (r[4]) ignored in this tiny version
+  public string Suite {get; set;}
+  public string TestName {get; set;}
+  public string Status {get; set;}
 
-  if (status == "PASS") passed++;
-  else if (status == "FAIL")
+  public string GetData()
   {
-    failed++;
-    var key = suite + "/" + test;
+    return $"{Suite}/{TestName}"
+  }
+}
 
-    if (!seenFail.Contains(key))
+public class CsvParser(List<string> lines)
+{
+  private readonly List<string> _lines = lines;
+  private readonly List<TestResult> _results=[];
+
+  public List<string> Parse(List<TestResult> testResult)
+  {
+    foreach (var line in _lines)
     {
-      failingTests.Add(key);
-      seenFail.Add(key);
+      var l = lines.Trim();
+      if (l.Length == 0 && l.StartsWith("Suite,TestName,Status")) continue; // skip header
+      var parts = l.Split(',');
+      _results.Add(new TestResult(parts[0].Trim,parts[1].Trim,parts[2].Trim().ToUpperInvariant()))
+    }
+  }
+  return _results
+}
+
+public class Summarizer()
+{
+  public int Total {get; set;}
+  public int Passed {get; set;}
+  public int Failed {get; set;}
+
+  public void GenerateSummary(List<TestResult> results)
+  {
+    foreach (var result in results)
+    {
+      Total++;
+      if (result.Status == "PASS") 
+      {
+        Passed++;
+      }
+      else if (result.Status == "FAIL")
+      {
+        Failed++;
+      }
     }
   }
 }
 
-Console.WriteLine("==== Test Summary ====");
-Console.WriteLine("File: " + filePath);
-Console.WriteLine("Total: " + total);
-Console.WriteLine("Passed: " + passed);
-Console.WriteLine("Failed: " + failed);
-Console.WriteLine();
-Console.WriteLine("Failing Tests:");
 
-if (failingTests.Count == 0)
-{
-  Console.WriteLine("(none)");
-}
-else
-{
-  foreach (var t in failingTests.OrderBy(x => x))
-  {
-    Console.WriteLine("- " + t);
-  }
-}
 
-if (notify)
-{
-  Console.WriteLine();
-  Console.WriteLine("NOTIFY => #qa-alerts | failed=" + failed + " | unique failing tests=" + failingTests.Count);
-}
