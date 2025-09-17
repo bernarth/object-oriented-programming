@@ -10,27 +10,37 @@ public sealed class CliOptions
   public string[]? Exporter { get; private set; }
   public string? OutPath { get; private set; }
 
+
+
   public static CliOptions Parse(string[] args)
   {
     var output = new CliOptions();
 
-    // TODO: Enhance this if/else calls
+    // SOLVED: Enhance this if/else calls. I use a dictionary althoug it can be improved. 
+    var options = new Dictionary<string, Action<string>>
+    {
+      ["--list"] = (value) => output.ListTemplates = true,
+      ["--template"] = (value) => output.TemplateId = value,
+      ["--purpose"] = (value) => output.Purpose = value,
+    };
     foreach (var argument in args)
     {
-      if (argument.Equals("--list", StringComparison.OrdinalIgnoreCase))
+      // for flags
+      if (options.ContainsKey(argument.ToLowerInvariant()))
       {
-        output.ListTemplates = true;
+        options[argument]("");
       }
-      else if (argument.StartsWith("--template=", StringComparison.OrdinalIgnoreCase))
+      // for options with values
+      else if (argument.Contains("="))
       {
-        output.TemplateId = argument.Split('=', 2)[1];
-      }
-      else if (argument.StartsWith("--purpose=", StringComparison.OrdinalIgnoreCase))
-      {
-        output.Purpose = argument.Split('=', 2)[1];
+        string option = argument.Split('=', 2)[0];
+        string value = argument.Split('=', 2)[1];
+        if (options.ContainsKey(option.ToLowerInvariant()))
+        {
+          options[option](value);
+        }
       }
     }
-
     return output;
   }
 }
