@@ -14,23 +14,40 @@ public sealed class CliOptions
   {
     var output = new CliOptions();
 
-    // TODO: Enhance this if/else calls
+    var optionSetters = new Dictionary<string, Action<string>>(StringComparer.OrdinalIgnoreCase)
+    {
+      ["--template"] = val => output.TemplateId = val,
+      ["--name"] = val => output.Name = val,
+      ["--purpose"] = val => output.Purpose = val,
+      ["--suite"] = val => output.Suite = val,
+      ["--exporter"] = val => output.Exporter = val.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
+      ["--out"] = val => output.OutPath = val
+    };
+
     foreach (var argument in args)
     {
       if (argument.Equals("--list", StringComparison.OrdinalIgnoreCase))
       {
         output.ListTemplates = true;
+        continue;
       }
-      else if (argument.StartsWith("--template=", StringComparison.OrdinalIgnoreCase))
+
+      var parts = argument.Split('=', 2);
+      if (parts.Length != 2)
+        continue;
+
+      var key = parts[0];
+      var value = parts[1];
+
+      if (optionSetters.TryGetValue(key, out var setter))
       {
-        output.TemplateId = argument.Split('=', 2)[1];
+        setter(value);
       }
-      else if (argument.StartsWith("--purpose=", StringComparison.OrdinalIgnoreCase))
+      else
       {
-        output.Purpose = argument.Split('=', 2)[1];
+        Console.WriteLine($"Advertencia: argumento no reconocido '{key}'");
       }
     }
-
     return output;
   }
 }
