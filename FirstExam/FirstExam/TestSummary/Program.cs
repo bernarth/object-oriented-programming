@@ -32,45 +32,24 @@ var lines = File.ReadAllLines(filePath);
 var parser = new TestResultFileParser();
 var testResults = parser.ParseCsv(lines);
 
-int total = 0;
-int passed = 0;
-int failed = 0;
-var failingTests = new List<string>();
-var seenFail = new HashSet<string>();
-
-// Mix parsing, counting, and output concerns in one place
-foreach (var result in testResults)
-{
-  total++;
-
-  if (result.Status == "PASS") passed++;
-  else if (result.Status == "FAIL")
-  {
-    failed++;
-
-    if (!seenFail.Contains(result.UniqueKey))
-    {
-      failingTests.Add(result.UniqueKey);
-      seenFail.Add(result.UniqueKey);
-    }
-  }
-}
+var analyzer = new TestResultsAnalyzer();
+analyzer.Analyze(testResults);
 
 Console.WriteLine("==== Test Summary ====");
 Console.WriteLine("File: " + filePath);
-Console.WriteLine("Total: " + total);
-Console.WriteLine("Passed: " + passed);
-Console.WriteLine("Failed: " + failed);
+Console.WriteLine("Total: " + analyzer.Total);
+Console.WriteLine("Passed: " + analyzer.Passed);
+Console.WriteLine("Failed: " + analyzer.Failed);
 Console.WriteLine();
 Console.WriteLine("Failing Tests:");
 
-if (failingTests.Count == 0)
+if (analyzer.FailingTests.Count == 0)
 {
   Console.WriteLine("(none)");
 }
 else
 {
-  foreach (var t in failingTests.OrderBy(x => x))
+  foreach (var t in analyzer.FailingTests)
   {
     Console.WriteLine("- " + t);
   }
@@ -79,7 +58,7 @@ else
 if (notify)
 {
   Console.WriteLine();
-  Console.WriteLine("NOTIFY => #qa-alerts | failed=" + failed + " | unique failing tests=" + failingTests.Count);
+  Console.WriteLine("NOTIFY => #qa-alerts | failed=" + analyzer.Failed + " | unique failing tests=" + analyzer.FailingTests.Count);
 }
 
 public class TestResult
@@ -118,5 +97,28 @@ public class TestResultFileParser
     }
 
     return results;
+  }
+}
+
+public class TestResultsAnalyzer
+{
+  public int Total { get; set; }
+  public int Passed { get; set; }
+  public int Failed { get; set; }
+  public List<string> FailingTests { get; private set; } = new List<string>();
+
+  public void Analyze(List<TestResult> results)
+  {
+    Total = results.Count;
+    Passed = results.Count(result => result.Status == "PASS");
+    Failed = results.Count(result => result.Status == "FAIL");
+
+    var seenFail = new HashSet<string>();
+    FailingTests = results
+      .Where(result => result.Status == "FAIL")
+      .Select(result => result.UniqueKey)
+      .Where(key => seenFail.Add(key))
+      .OrderBy(key => key)
+      .ToList();
   }
 }
