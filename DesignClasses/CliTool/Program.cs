@@ -7,10 +7,14 @@ using Microsoft.Extensions.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-// TODO: What is AddSingleton, AddScoped, AddTransient
-// AddSingleton: 
-// AddScoped:
-// AddTransient:
+// TODO: AddSingleton: This method registers a Service as a Singleton service.
+//    It means that the service is created once per application and the 
+//    same instance is used all over the app. E.g: Logging
+// AddScoped: With this method a new instance is created but once for 
+//     each specific request. This ensures that all components in the 
+//     same request share the same instance.
+// AddTransient: with this method a new instance of the service is created
+//     each time it is requested.
 
 builder.Services.AddSingleton(DemoTemplates.Library);
 builder.Services.AddSingleton<TestCaseBuilder>();
