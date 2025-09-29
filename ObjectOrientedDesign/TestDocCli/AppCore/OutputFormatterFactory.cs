@@ -2,7 +2,7 @@ using TestDocCli.Formatters;
 
 namespace TestDocCli.AppCore;
 
-// TODO: Add validation for the `formatArgument` (Could be here or in the Arguments class, or else where)
+// DONE: Add validation for the `formatArgument` (Could be here or in the Arguments class, or else where)
 // The validation should valid if we don't have a default value. And display messages for valid inputs
 public class OutputFormatterFactory : IOutputFormatterFactory
 {
@@ -15,7 +15,8 @@ public class OutputFormatterFactory : IOutputFormatterFactory
       "md" or "markdown" => new MarkdownFormatter(),
       "html" => new HtmlFormatter(),
       "console" or "text" or "" => new PlainConsoleFormatter(),
-      _ => new PlainConsoleFormatter()
+      _ => throw new ArgumentException(
+        $"Format '{normalized}' is not supported. Supported formats: md, markdown, html, console, text.")
     };
   }
 }
