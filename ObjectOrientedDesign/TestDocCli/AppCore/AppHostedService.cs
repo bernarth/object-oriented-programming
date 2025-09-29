@@ -33,8 +33,8 @@ public class AppHostedService(
       ? Directory.GetCurrentDirectory()
       : _settings.Value.OutputDirectory;
 
-    // TODO: replace string.Empty with testDocument.Title
-    string savedPath = _fileExporter.Save(output, formatter.FileExtension, string.Empty, directory);
+    // SOLVED: replace string.Empty with testDocument.Title
+    string savedPath = _fileExporter.Save(output, formatter.FileExtension, testDocument.Title, directory);
     _console.WriteLine($"Saved to: {savedPath}");
 
     return Task.CompletedTask;
