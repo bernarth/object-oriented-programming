@@ -1,3 +1,7 @@
+using System;
+using System.IO;
+using System.Linq; // Also needed for .Where and .ToArray()
+
 namespace TestDocCli.AppCore;
 
 public sealed class FileExporter : IFileExporter
@@ -14,8 +18,9 @@ public sealed class FileExporter : IFileExporter
       Directory.CreateDirectory(directory);
     }
 
-    // TODO: Normalize the baseNameHint so we can use the title of the document as the name
-    string baseName = string.IsNullOrWhiteSpace(baseNameHint) ? "testdoc" : baseNameHint;
+    // DONE: Normalize the baseNameHint so we can use the title of the document as the name
+    string baseName = string.IsNullOrWhiteSpace(baseNameHint) ? "testdoc" : 
+        new string(baseNameHint.Where(c => !Path.GetInvalidFileNameChars().Contains(c)).ToArray());
     string timestamp = DateTimeOffset.Now.ToString("yyyyMMdd-HHmmss");
     string fileName = $"{baseName}-{timestamp}.{extension}";
     string fullPath = Path.Combine(directory, fileName);
