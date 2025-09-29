@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+using System.Globalization;
 namespace TestDocCli.AppCore;
 
 public sealed class FileExporter : IFileExporter
@@ -14,8 +16,9 @@ public sealed class FileExporter : IFileExporter
       Directory.CreateDirectory(directory);
     }
 
-    // TODO: Normalize the baseNameHint so we can use the title of the document as the name
-    string baseName = string.IsNullOrWhiteSpace(baseNameHint) ? "testdoc" : baseNameHint;
+    // DONE: Normalize the baseNameHint so we can use the title of the document as the name
+    string baseName = string.IsNullOrWhiteSpace(baseNameHint) ? "testdoc" : Regex.Replace(baseNameHint.Trim(), $"[{Regex.Escape(new string(Path.GetInvalidFileNameChars()))}]+", "-")
+      .Trim('-', '.', ' ');
     string timestamp = DateTimeOffset.Now.ToString("yyyyMMdd-HHmmss");
     string fileName = $"{baseName}-{timestamp}.{extension}";
     string fullPath = Path.Combine(directory, fileName);
