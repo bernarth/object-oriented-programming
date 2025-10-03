@@ -14,36 +14,32 @@ public sealed class CliOptions
   {
     var output = new CliOptions();
 
-    // TODO: Enhance this if/else calls
+    var actions = new Dictionary<string, Action<string>>
+    {
+      ["--template"] = val => output.TemplateId = val,
+      ["--name"] = val => output.Name = val,
+      ["--purpose"] = val => output.Purpose = val,
+      ["--suite"] = val => output.Suite = val,
+      ["--export"] = val => output.Exporter = val.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
+      ["--out"] = val => output.OutPath = val
+    };
+
+    // SOLVE: Enhance this if/else calls
     foreach (var argument in args)
     {
       if (argument.Equals("--list", StringComparison.OrdinalIgnoreCase))
       {
         output.ListTemplates = true;
       }
-      else if (argument.StartsWith("--template=", StringComparison.OrdinalIgnoreCase))
+      else if (argument.Contains('='))
       {
-        output.TemplateId = argument.Split('=', 2)[1];
-      }
-      else if (argument.StartsWith("--name=", StringComparison.OrdinalIgnoreCase))
-      {
-        output.Name = argument.Split('=', 2)[1];
-      }
-      else if (argument.StartsWith("--purpose=", StringComparison.OrdinalIgnoreCase))
-      {
-        output.Purpose = argument.Split('=', 2)[1];
-      }
-      else if (argument.StartsWith("--suite=", StringComparison.OrdinalIgnoreCase))
-      {
-        output.Suite = argument.Split('=', 2)[1];
-      }
-      else if (argument.StartsWith("--export=", StringComparison.OrdinalIgnoreCase))
-      {
-        output.Exporter = argument.Split('=', 2)[1].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-      }
-      else if (argument.StartsWith("--out=", StringComparison.OrdinalIgnoreCase))
-      {
-        output.OutPath = argument.Split('=', 2)[1];
+        var parts = argument.Split('=', 2);
+        var key = parts[0].ToLowerInvariant();
+        var value = parts[1];
+        if (actions.TryGetValue(key, out var action))
+        {
+          action(value);
+        }
       }
     }
 

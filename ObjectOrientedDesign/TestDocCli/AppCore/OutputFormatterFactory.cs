@@ -3,13 +3,25 @@ using TestDocCli.Formatters;
 
 namespace TestDocCli.AppCore;
 
-// TODO: Add validation for the `formatArgument` (Could be here or in the Arguments class, or else where)
+// SOLVE: Add validation for the `formatArgument` (Could be here or in the Arguments class, or else where)
 // The validation should valid if we don't have a default value. And display messages for valid inputs
 public class OutputFormatterFactory : IOutputFormatterFactory
 {
+  private static readonly HashSet<string> SupportedFormats = new()
+  {
+    "md", "markdown", "html", "console", "text", ""
+  };
+
   public IOutputFormatter Create(string formatArgument)
   {
     string normalized = (formatArgument ?? string.Empty).Trim().ToLowerInvariant();
+
+    if (!SupportedFormats.Contains(normalized))
+    {
+      throw new ConfigurationException(
+        $"Unsupported format: '{formatArgument}'. Supported formats: console, text, html, md, markdown."
+      );
+    }
 
     return normalized switch
     {

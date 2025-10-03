@@ -36,12 +36,20 @@
     public string Status = string.Empty;
   }
 
-  public class TestCase(string name, int priority)
+  public enum TestPriority
+  {
+    Low = 1,
+    Medium = 2,
+    High = 3,
+    Critical = 4
+  }
+
+  public class TestCase(string name, TestPriority priority)
   {
     // Fields (should never be public)
     private string _name = name;
-    // TODO: Turn this into an enum
-    private int _priority = priority;
+    // SOLVED: Turn this into an enum
+    private TestPriority _priority = priority;
 
     // Properties (public-facing)
     public string Status { get; private set; } = "Not Executed";
@@ -143,7 +151,7 @@
 
       // Note: Don't code for yourself if you want to write good code think others will see your code.
 
-      
+
     }
   }
 }

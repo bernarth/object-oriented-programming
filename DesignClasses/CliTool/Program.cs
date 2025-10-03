@@ -7,10 +7,16 @@ using Microsoft.Extensions.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-// TODO: What is AddSingleton, AddScoped, AddTransient
-// AddSingleton: 
-// AddScoped:
-// AddTransient:
+// SOLVED: What is AddSingleton, AddScoped, AddTransient
+// AddSingleton: Instance created: Once | Lifetime: Application
+//    * Register a service as a singleton
+//    * Only one instance is created and shared for all the application
+// AddScoped: Instance created: Once per scope | Lifetime: Scope (e.g. request)
+//    * Register a service as scoped
+//    * A new instance is created per scope
+// AddTransient: Instance created: Every request | Lifetime: None
+//    * Registers a service as transient
+//    * A new instance is created every time the service is requested
 
 builder.Services.AddSingleton(DemoTemplates.Library);
 builder.Services.AddSingleton<TestCaseBuilder>();
