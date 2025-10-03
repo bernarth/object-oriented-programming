@@ -18,8 +18,7 @@ public sealed class FileExporter : IFileExporter
         Directory.CreateDirectory(directory);
       }
 
-      // TODO: Normalize the baseNameHint so we can use the title of the document as the name
-      string baseName = string.IsNullOrWhiteSpace(baseNameHint) ? "testdoc" : baseNameHint;
+      string baseName = NormalizeFileName(baseNameHint);
       string timestamp = DateTimeOffset.Now.ToString("yyyyMMdd-HHmmss");
       string fileName = $"{baseName}-{timestamp}.{extension}";
       string fullPath = Path.Combine(directory, fileName);
@@ -32,5 +31,20 @@ public sealed class FileExporter : IFileExporter
     {
       throw new ExportException("Could not write the file. Check permissions or path", ioException);
     }
+  }
+
+  private static string NormalizeFileName(string baseName)
+  {
+    if (string.IsNullOrWhiteSpace(baseName))
+      return "testdoc";
+
+    foreach (var c in Path.GetInvalidFileNameChars())
+    {
+      baseName = baseName.Replace(c, '-');
+    }
+
+    baseName = baseName.Trim();
+
+    return baseName.Length > 100 ? baseName[..100] : baseName;
   }
 }

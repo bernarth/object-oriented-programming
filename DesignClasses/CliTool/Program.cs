@@ -7,10 +7,13 @@ using Microsoft.Extensions.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-// TODO: What is AddSingleton, AddScoped, AddTransient
-// AddSingleton: 
-// AddScoped:
-// AddTransient:
+// SOLVED: What is AddSingleton, AddScoped, AddTransient
+// AddSingleton:  A single instance is created and shared through the entire application.
+//                An example of use case: When only one shared instance is created to manage all requests.  
+// AddScoped:     A new instance is created per HTTP request. All services within that request share the same instance.
+//                An example of use case: When a per-request data, like database contexts is needed. 
+// AddTransient:  A new instance is created every time the service IS REQUESTED.
+//                An example of use case: Whe we need lightweight, stateless services.
 
 builder.Services.AddSingleton(DemoTemplates.Library);
 builder.Services.AddSingleton<TestCaseBuilder>();
