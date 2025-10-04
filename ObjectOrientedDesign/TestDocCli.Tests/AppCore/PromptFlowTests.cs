@@ -1,5 +1,7 @@
+using AutoFixture;
 using Moq;
 using TestDocCli.AppCore;
+using TestDocCli.Errors;
 using TestDocCli.InputOutput;
 using TestDocCli.Model;
 
@@ -7,12 +9,13 @@ namespace TestDocCli.Tests.AppCore;
 
 public class PromptFlowTests
 {
-  private readonly Mock<IConsole> consoleMock = new(MockBehavior.Strict);
-  private readonly Mock<IInputReader> readerMock = new(MockBehavior.Strict);
+  private readonly Mock<IConsole> _consoleMock = new(MockBehavior.Strict);
+  private readonly Mock<IInputReader> _readerMock = new(MockBehavior.Strict);
+  private readonly Fixture _fixture = new();
 
   public PromptFlowTests()
   {
-    consoleMock.Setup(x => x.WriteLine(It.IsAny<string>())).Verifiable();
+    _consoleMock.Setup(x => x.WriteLine(It.IsAny<string>())).Verifiable();
   }
 
   [Fact]
@@ -92,27 +95,40 @@ public class PromptFlowTests
   public void CollectTestDocument_WithMoq_ShouldCaptureConsole()
   {
     // var consoleMock = new Mock<IConsole>(MockBehavior.Strict);
-    // var readerMock = new Mock<IInputReader>(MockBehavior.Strict);
+    // var _readerMock = new Mock<IInputReader>(MockBehavior.Strict);
 
-    readerMock.Setup(x => x.ReadRequired("Title")).Returns("Checkout");
-    readerMock.Setup(x => x.ReadRequired("Description")).Returns("User can checkout");
+    _readerMock.Setup(x => x.ReadRequired("Title")).Returns("Checkout");
+    _readerMock.Setup(x => x.ReadRequired("Description")).Returns("User can checkout");
     // consoleMock.Setup(x => x.WriteLine(It.IsAny<string>())).Verifiable();
-    readerMock.SetupSequence(x => x.ReadLine(It.Is<string>(s => s.StartsWith("Step "))))
+    _readerMock.SetupSequence(x => x.ReadLine(It.Is<string>(s => s.StartsWith("Step "))))
       .Returns("Add to cart")
       .Returns("Pay")
       .Returns(string.Empty);
-    readerMock.Setup(x => x.ReadRequired("Expected Result")).Returns("Order completed");
-    readerMock.Setup(x => x.ReadRequired("Actual Result")).Returns("Order un-completed");
+    _readerMock.Setup(x => x.ReadRequired("Expected Result")).Returns("Order completed");
+    _readerMock.Setup(x => x.ReadRequired("Actual Result")).Returns("Order un-completed");
 
-    var promptFlow = new PromptFlow(readerMock.Object, consoleMock.Object);
+    var promptFlow = new PromptFlow(_readerMock.Object, _consoleMock.Object);
 
     TestDocument result = promptFlow.CollectTestDocument();
 
     Assert.Equal("Checkout", result.Title);
     Assert.Equal(2, result.Steps.Count);
-    consoleMock.VerifyAll();
-    readerMock.VerifyAll();
+    _consoleMock.VerifyAll();
+    _readerMock.VerifyAll();
   }
 
-  // TODO: Add more tests (you can separate the tests)
+  [Fact]
+  public void CollectTestDocument_WithNoSteps_ThrowsValidationException()
+  {
+    _readerMock.Setup(x => x.ReadRequired("Title")).Returns(_fixture.Create<string>().Substring(0, 12));
+    _readerMock.Setup(x => x.ReadRequired("Description")).Returns(_fixture.Create<string>().Substring(0, 12));
+    _readerMock.Setup(x => x.ReadLine(It.IsAny<string>())).Returns(string.Empty);
+    _readerMock.Setup(x => x.ReadRequired("Expected Result")).Returns(_fixture.Create<string>().Substring(0, 12));
+    _readerMock.Setup(x => x.ReadRequired("Actual Result")).Returns(_fixture.Create<string>().Substring(0, 12));
+    var promptFlow = new PromptFlow(_readerMock.Object, _consoleMock.Object);
+
+    Assert.Throws<ValidationException>(() => promptFlow.CollectTestDocument());
+  }
+  // SOLVED: Add more tests (you can separate the tests)
+  // Tests were added for FileExporter, PlainConsoleFormatter
 }
