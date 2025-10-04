@@ -4,7 +4,7 @@ namespace TestDocCli.AppCore;
 
 public sealed class FileExporter : IFileExporter
 {
-  private string NormalizeTitle(string title)
+  private static string NormalizeTitle(string title)
   {
     TextInfo textInfo = CultureInfo.InvariantCulture.TextInfo;
     title = Regex.Replace(title, "[^a-zA-Z0-9]", " ");
