@@ -1,16 +1,14 @@
-﻿using BugTracker.Application;
+using BugTracker.Application;
 using BugTracker.Hosting;
 using BugTracker.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+var builder = Host.CreateApplicationBuilder(args);
 
-// TODO: Enhance the DI
-builder.Services.AddSingleton<BugRepository>();
+builder.Services.AddSingleton<IBugRepository, BugRepository>();
 builder.Services.AddSingleton<BugTrackerService>();
-
 builder.Services.AddHostedService<AppHostedService>();
 
-using IHost host = builder.Build();
+using var host = builder.Build();
 host.Run();

@@ -3,26 +3,23 @@ using BugTracker.Domain;
 
 namespace BugTracker.Presentation;
 
-public class ConsoleReport
+public static class ConsoleReport
 {
   public static void Print(IEnumerable<Bug> bugs)
   {
-    foreach (Bug bug in bugs)
-    {
-      string line = Format(bug);
-      Console.WriteLine(line);
-    }
+    foreach (var bug in bugs)
+      Console.WriteLine(Format(bug));
   }
 
   public static string Format(Bug bug)
   {
-    StringBuilder builder = new StringBuilder();
+    var builder = new StringBuilder();
     builder.Append('[')
            .Append(bug.Id)
            .Append("] ")
            .Append(bug.Title)
            .Append(" | ")
-           .Append(bug.Severity.ToString())
+           .Append(bug.Severity)
            .Append(" | ")
            .Append(bug.IsFixed ? "Fixed" : "Open");
 

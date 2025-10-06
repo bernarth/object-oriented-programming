@@ -3,64 +3,36 @@ using BugTracker.Infrastructure;
 
 namespace BugTracker.Application;
 
-public class BugTrackerService(BugRepository repository)
+public class BugTrackerService
 {
-  private readonly BugRepository _repository = repository;
+  private readonly IBugRepository _repository;
+
+  public BugTrackerService(IBugRepository repository)
+  {
+    _repository = repository;
+  }
 
   public Bug ReportNew(string title, Severity severity)
   {
-    Bug transient = new(0, title, severity);
-    Bug saved = _repository.Add(transient);
-    return saved;
+    var transient = new Bug(0, title, severity);
+    return _repository.Add(transient);
   }
 
   public bool FixById(int id)
   {
-    Bug? bug = _repository.GetById(id);
-    if (bug == null)
-    {
-      return false;
-    }
+    var bug = _repository.GetById(id);
+    if (bug is null) return false;
 
     bug.Fix();
     _repository.Save(bug);
     return true;
   }
 
-  public List<Bug> GetAll()
-  {
-    return _repository.GetAll();
-  }
+  public List<Bug> GetAll() => _repository.GetAll();
 
-  public List<Bug> GetOpenBugs()
-  {
-    List<Bug> result = [];
-    List<Bug> all = _repository.GetAll();
+  public List<Bug> GetOpenBugs() =>
+    _repository.GetAll().Where(b => !b.IsFixed).ToList();
 
-    foreach (Bug bug in all)
-    {
-      if (bug.IsFixed == false)
-      {
-        result.Add(bug);
-      }
-    }
-
-    return result;
-  }
-
-  public int CountOpenBySeverity(Severity severity)
-  {
-    int count = 0;
-    List<Bug> all = _repository.GetAll();
-
-    foreach (Bug bug in all)
-    {
-      if (bug.IsFixed == false && bug.Severity == severity)
-      {
-        count++;
-      }
-    }
-
-    return count;
-  }
+  public int CountOpenBySeverity(Severity severity) =>
+    _repository.GetAll().Count(b => !b.IsFixed && b.Severity == severity);
 }

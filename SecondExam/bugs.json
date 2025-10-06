@@ -1,0 +1,20 @@
+[
+  {
+    "Id": 1,
+    "Title": "Login page crashes on empty password",
+    "Severity": 3,
+    "IsFixed": false
+  },
+  {
+    "Id": 2,
+    "Title": "Tooltip overlaps with button",
+    "Severity": 1,
+    "IsFixed": true
+  },
+  {
+    "Id": 3,
+    "Title": "API returns 500 for invalid token",
+    "Severity": 3,
+    "IsFixed": false
+  }
+]

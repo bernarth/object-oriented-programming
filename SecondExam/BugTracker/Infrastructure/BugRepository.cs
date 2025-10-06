@@ -1,46 +1,65 @@
+using System.Text.Json;
 using BugTracker.Domain;
 
 namespace BugTracker.Infrastructure;
 
-public class BugRepository
+public class BugRepository : IBugRepository
 {
-  private readonly List<Bug> _items;
-  private int _nextId;
+  private readonly List<Bug> _items = [];
+  private int _nextId = 1;
+  private readonly string _filePath;
 
-  public BugRepository()
+  public BugRepository(string filePath = "bugs.json")
   {
-    _items = [];
-    _nextId = 1;
+    _filePath = filePath;
+    Load();
   }
 
   public Bug Add(Bug bug)
   {
-    Bug bugWithId = new(_nextId, bug.Title, bug.Severity);
+    var bugWithId = new Bug(_nextId++, bug.Title, bug.Severity);
     _items.Add(bugWithId);
-    _nextId++;
     return bugWithId;
   }
 
-  public Bug? GetById(int id)
-  {
-    for (int i = 0; i < _items.Count; i++)
-    {
-      if (_items[i].Id == id)
-      {
-        return _items[i];
-      }
-    }
+  public Bug? GetById(int id) => _items.FirstOrDefault(b=> b.Id == id);
 
-    return null;
-  }
-
-  public List<Bug> GetAll()
-  {
-    return _items;
-  }
+  public List<Bug> GetAll() => _items.ToList();
 
   public void Save(Bug bug)
   {
-    // TODO: In-memory only.
+    var index = _items.FindIndex(b => b.Id == bug.Id);
+    if (index >= 0)
+    {
+      _items[index] = bug;
+      SaveToFile();
+    }
+  }
+
+  private void SaveToFile()
+  {
+    var options = new JsonSerializerOptions { WriteIndented = true };
+    var json = JsonSerializer.Serialize(_items, options);
+    File.WriteAllText(_filePath, json);
+  }
+
+  private void Load()
+  {
+    if (!File.Exists(_filePath)) return;
+    try
+    {
+      var json = File.ReadAllText(_filePath);
+      var bugs = JsonSerializer.Deserialize<List<Bug>>(json);
+      if (bugs is not null)
+      {
+        _items.AddRange(bugs);
+        _nextId = _items.Any() ? _items.Max(b => b.Id) +1 : 1;
+      }
+    }
+    catch
+    {
+      _items.Clear();
+      _nextId = 1;
+    }
   }
 }
