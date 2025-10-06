@@ -1,5 +1,6 @@
 using Moq;
 using TestDocCli.AppCore;
+using TestDocCli.Errors;
 using TestDocCli.InputOutput;
 using TestDocCli.Model;
 
@@ -114,5 +115,18 @@ public class PromptFlowTests
     readerMock.VerifyAll();
   }
 
-  // TODO: Add more tests (you can separate the tests)
+  // DONE: Add more tests.
+  [Fact]
+  public void CollectTestDocument_EmptyTitle_ThrowsArgumentException()
+  {
+    readerMock.Setup(x => x.ReadRequired("Title")).Returns(string.Empty);
+    readerMock.Setup(x => x.ReadRequired("Description")).Returns(string.Empty);
+    readerMock.Setup(x => x.ReadLine(It.IsAny<string>())).Returns(string.Empty);
+    var promptFlow = new PromptFlow(readerMock.Object, consoleMock.Object);
+
+    Assert.Throws<ValidationException>(() => promptFlow.CollectTestDocument());
+
+    readerMock.VerifyAll();
+    consoleMock.VerifyAll();
+  }
 }
