@@ -5,5 +5,5 @@
 
 (OPTIONAL)
 
-3. Everything that has `TODO`
+3. Everything that has `TODO` is optional
 4. Add final diagram
