@@ -5,9 +5,14 @@ using Microsoft.Extensions.Hosting;
 
 namespace BugTracker.Hosting;
 
-public class AppHostedService(BugTrackerService service) : IHostedService
+public class AppHostedService : IHostedService
 {
-  private readonly BugTrackerService _service = service;
+  private readonly IBugTrackerService _service;
+
+  public AppHostedService(IBugTrackerService service)
+  {
+    _service = service;
+  }
 
   public Task StartAsync(CancellationToken cancellationToken)
   {

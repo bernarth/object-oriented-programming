@@ -3,11 +3,11 @@ using BugTracker.Infrastructure;
 
 namespace BugTracker.Application;
 
-public class BugTrackerService
+public class BugTrackerService : IBugTrackerService
 {
-  private readonly BugRepository _repository;
+  private readonly IBugRepository _repository;
 
-  public BugTrackerService(BugRepository repository)
+  public BugTrackerService(IBugRepository repository)
   {
     _repository = repository;
   }
