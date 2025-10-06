@@ -1,6 +1,4 @@
-﻿using TestSummary;
-
-string filePath = "test-results.csv";
+﻿string filePath = "test-results.csv";
 
 bool notify = false;
 

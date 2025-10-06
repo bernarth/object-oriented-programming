@@ -15,7 +15,11 @@ public class BugRepository
 
   public Bug Add(Bug bug)
   {
-    Bug bugWithId = new(_nextId, bug.Title, bug.Severity);
+        Bug bugWithId = new(_nextId, bug.Title, bug.Severity)
+        {
+            IsFixed = bug.IsFixed,
+        };
+
     _items.Add(bugWithId);
     _nextId++;
     return bugWithId;
@@ -42,5 +46,16 @@ public class BugRepository
   public void Save(Bug bug)
   {
     // TODO: In-memory only.
+    for(int i = 0; i < _items.Count; i++)
+    {
+       if (_items[i].Id == bug.Id)
+       {
+          _items[i].Title = bug.Title;
+          _items[i].Severity = bug.Severity;
+          _items[i].IsFixed = bug.IsFixed;
+
+                return;
+       }
+    }  
   }
 }
