@@ -2,6 +2,7 @@ using TestDocCli.Errors;
 
 namespace TestDocCli.AppCore;
 
+// TODO: Test the business rules
 public sealed class FileExporter : IFileExporter
 {
   public string Save(string content, string extension, string baseNameHint, string directory)
@@ -25,7 +26,7 @@ public sealed class FileExporter : IFileExporter
       string fullPath = Path.Combine(directory, fileName);
 
       File.WriteAllText(fullPath, content);
-    
+
       return fullPath;
     }
     catch (Exception ioException)

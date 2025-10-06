@@ -16,11 +16,11 @@ public class AppHostedService(
   IErrorReporter errorReporter) : IHostedService
 {
   private readonly IOptions<AppSettings> _settings = settings;
-  private readonly IConsole _console = console;
-  private readonly IPromptFlow _promptFlow = promptFlow;
-  private readonly IOutputFormatterFactory _formatterFactory = formatterFactory;
-  private readonly IFileExporter _fileExporter = fileExporter;
-  private readonly IErrorReporter _errorReporter = errorReporter;
+  private readonly IConsole _console = console ?? throw new ArgumentNullException(nameof(console));
+  private readonly IPromptFlow _promptFlow = promptFlow ?? throw new ArgumentNullException(nameof(promptFlow));
+  private readonly IOutputFormatterFactory _formatterFactory = formatterFactory ?? throw new ArgumentNullException(nameof(formatterFactory));
+  private readonly IFileExporter _fileExporter = fileExporter ?? throw new ArgumentNullException(nameof(fileExporter));
+  private readonly IErrorReporter _errorReporter = errorReporter ?? throw new ArgumentNullException(nameof(errorReporter));
 
   public Task StartAsync(CancellationToken cancellationToken)
   {
