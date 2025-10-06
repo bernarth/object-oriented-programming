@@ -1,0 +1,58 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" version="28.2.5">
+  <diagram name="Bug Tracker UML" id="985mclxTCNhwzjEm9DLK">
+    <mxGraphModel dx="1042" dy="527" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="hZW-iOTFBGEq60EUO49W-1" value="Bug" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="hZW-iOTFBGEq60EUO49W-2" value="Severity" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="10" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="hZW-iOTFBGEq60EUO49W-15" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="hZW-iOTFBGEq60EUO49W-3" target="hZW-iOTFBGEq60EUO49W-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="hZW-iOTFBGEq60EUO49W-3" value="IBugRepository" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="220" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="hZW-iOTFBGEq60EUO49W-4" value="BugRepository" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="360" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="hZW-iOTFBGEq60EUO49W-16" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="hZW-iOTFBGEq60EUO49W-5" target="hZW-iOTFBGEq60EUO49W-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="hZW-iOTFBGEq60EUO49W-5" value="IBugTrackerService" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="300" y="200" width="260" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="hZW-iOTFBGEq60EUO49W-6" value="BugTrackerService" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="360" width="260" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="hZW-iOTFBGEq60EUO49W-7" value="AppHostedService" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="340" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="hZW-iOTFBGEq60EUO49W-8" value="ConsoleReport" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="60" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="hZW-iOTFBGEq60EUO49W-9" style="endArrow=block;endFill=1;dashed=1;strokeColor=#000000;" edge="1" parent="1" source="hZW-iOTFBGEq60EUO49W-4" target="hZW-iOTFBGEq60EUO49W-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="hZW-iOTFBGEq60EUO49W-10" style="endArrow=block;endFill=1;dashed=1;strokeColor=#000000;" edge="1" parent="1" source="hZW-iOTFBGEq60EUO49W-6" target="hZW-iOTFBGEq60EUO49W-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="hZW-iOTFBGEq60EUO49W-11" style="endArrow=open;endFill=0;strokeColor=#000000;" edge="1" parent="1" source="hZW-iOTFBGEq60EUO49W-6" target="hZW-iOTFBGEq60EUO49W-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="hZW-iOTFBGEq60EUO49W-12" style="endArrow=open;endFill=0;strokeColor=#000000;" edge="1" parent="1" source="hZW-iOTFBGEq60EUO49W-7" target="hZW-iOTFBGEq60EUO49W-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="hZW-iOTFBGEq60EUO49W-13" style="endArrow=none;endFill=0;strokeColor=#000000;" edge="1" parent="1" source="hZW-iOTFBGEq60EUO49W-8" target="hZW-iOTFBGEq60EUO49W-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="hZW-iOTFBGEq60EUO49W-14" style="endArrow=none;endFill=0;strokeColor=#000000;" edge="1" parent="1" source="hZW-iOTFBGEq60EUO49W-1" target="hZW-iOTFBGEq60EUO49W-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
