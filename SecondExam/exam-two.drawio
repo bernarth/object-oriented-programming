@@ -1,0 +1,70 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" version="28.1.2">
+  <diagram name="Page-1" id="Vx2TU7jZW0SnFLhLdF7D">
+    <mxGraphModel dx="1882" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2qYuA7d4cBn_cqZU2hbe-10" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="2qYuA7d4cBn_cqZU2hbe-1" target="2qYuA7d4cBn_cqZU2hbe-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2qYuA7d4cBn_cqZU2hbe-1" value="Program" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="50" y="190" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="2qYuA7d4cBn_cqZU2hbe-2" value="AppHostedService" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="230" y="190" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="2qYuA7d4cBn_cqZU2hbe-3" value="BugTrackerService" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="390" y="190" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="2qYuA7d4cBn_cqZU2hbe-4" value="BugRepository" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="580" y="190" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="2qYuA7d4cBn_cqZU2hbe-5" value="Bug" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="770" y="190" width="90" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="2qYuA7d4cBn_cqZU2hbe-6" value="Severity" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="860" y="290" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="2qYuA7d4cBn_cqZU2hbe-8" value="ConsoleReport" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="980" y="190" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="2qYuA7d4cBn_cqZU2hbe-11" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="2qYuA7d4cBn_cqZU2hbe-2" target="2qYuA7d4cBn_cqZU2hbe-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="360" y="270" as="sourcePoint" />
+            <mxPoint x="430" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2qYuA7d4cBn_cqZU2hbe-12" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="2qYuA7d4cBn_cqZU2hbe-3" target="2qYuA7d4cBn_cqZU2hbe-4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="430" y="280" as="sourcePoint" />
+            <mxPoint x="500" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2qYuA7d4cBn_cqZU2hbe-13" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="2qYuA7d4cBn_cqZU2hbe-4" target="2qYuA7d4cBn_cqZU2hbe-5">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="640" y="260" as="sourcePoint" />
+            <mxPoint x="690" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2qYuA7d4cBn_cqZU2hbe-14" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="2qYuA7d4cBn_cqZU2hbe-5" target="2qYuA7d4cBn_cqZU2hbe-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="770" y="250" as="sourcePoint" />
+            <mxPoint x="820" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2qYuA7d4cBn_cqZU2hbe-15" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=none;endFill=0;" edge="1" parent="1" source="2qYuA7d4cBn_cqZU2hbe-6" target="2qYuA7d4cBn_cqZU2hbe-8">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="940" y="260" as="sourcePoint" />
+            <mxPoint x="1020" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2qYuA7d4cBn_cqZU2hbe-16" value="BugTracker" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="2qYuA7d4cBn_cqZU2hbe-17" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;TODO&lt;/h1&gt;&lt;p&gt;Enhance the relations and/or add more entities if necessary.&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="50" y="290" width="180" height="95" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
