@@ -2,7 +2,7 @@ using BugTracker.Domain;
 
 namespace BugTracker.Infrastructure;
 
-public class BugRepository
+public class BugRepository : IBugRepository
 {
   private readonly List<Bug> _items;
   private int _nextId;
@@ -41,6 +41,13 @@ public class BugRepository
 
   public void Save(Bug bug)
   {
-    // TODO: In-memory only.
+    for (int i = 0; i < _items.Count; i++)
+    {
+        if (_items[i].Id == bug.Id)
+        {
+            _items[i] = bug;
+            return;
+        }
+    }
   }
 }
