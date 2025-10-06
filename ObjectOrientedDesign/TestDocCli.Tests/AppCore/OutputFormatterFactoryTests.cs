@@ -9,9 +9,14 @@ public class OutputFormatterFactoryTests
   [Theory]
   [InlineData("", typeof(PlainConsoleFormatter))]
   [InlineData("console", typeof(PlainConsoleFormatter))]
+  [InlineData("  console ", typeof(PlainConsoleFormatter))]
+  [InlineData("CONsole ", typeof(PlainConsoleFormatter))]
   [InlineData("text", typeof(PlainConsoleFormatter))]
+  [InlineData("TEXT", typeof(PlainConsoleFormatter))]
   [InlineData("html", typeof(HtmlFormatter))]
+  [InlineData("HTML", typeof(HtmlFormatter))]
   [InlineData("md", typeof(MarkdownFormatter))]
+  [InlineData("mD", typeof(MarkdownFormatter))]
   [InlineData("markdown", typeof(MarkdownFormatter))]
   public void Create_KnownHtmlFormat_ReturnsHtmlFormatter(string input, Type expectedType)
   {
@@ -22,13 +27,18 @@ public class OutputFormatterFactoryTests
     Assert.IsType(expectedType, formatter);
   }
 
-  [Fact]
-  public void Create_UnknownFormat_ThrowsConfigurationException()
+  [Theory]
+  [InlineData("_text")]
+  [InlineData("txt")]
+  [InlineData("pdf")]
+  [InlineData("cnsolee")]
+  [InlineData("m")]
+  [InlineData("123&%$")]
+  public void Create_UnknownFormat_ThrowsConfigurationException(string unknownFormat)
   {
     var factory = new OutputFormatterFactory();
 
-    Assert.Throws<ConfigurationException>(() => factory.Create("pdf"));
+    Assert.Throws<ConfigurationException>(() => factory.Create(unknownFormat));
   }
-
-  // TODO: Add more tests
+  // DONE: Add more tests.  
 }
