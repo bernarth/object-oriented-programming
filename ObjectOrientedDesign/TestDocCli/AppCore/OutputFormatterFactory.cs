@@ -1,3 +1,4 @@
+using TestDocCli.Errors;
 using TestDocCli.Formatters;
 
 namespace TestDocCli.AppCore;
@@ -15,7 +16,7 @@ public class OutputFormatterFactory : IOutputFormatterFactory
       "md" or "markdown" => new MarkdownFormatter(),
       "html" => new HtmlFormatter(),
       "console" or "text" or "" => new PlainConsoleFormatter(),
-      _ => new PlainConsoleFormatter()
+      _ => throw new ConfigurationException($"Unsupported format: '{formatArgument}'. Use console|text|html|md|markdown.")
     };
   }
 }

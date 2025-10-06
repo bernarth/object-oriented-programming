@@ -1,3 +1,4 @@
+using TestDocCli.Errors;
 using TestDocCli.InputOutput;
 using TestDocCli.Model;
 
@@ -32,6 +33,11 @@ public class PromptFlow(IInputReader inputReader, IConsole console) : IPromptFlo
 
       steps.Add(line.Trim());
       stepNumber++;
+    }
+
+    if (steps.Count == 0)
+    {
+      throw new ValidationException("At least one step is required.");
     }
 
     string expected = _inputReader.ReadRequired("Expected Result");

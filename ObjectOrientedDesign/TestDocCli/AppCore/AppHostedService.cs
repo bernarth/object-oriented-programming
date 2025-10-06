@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using TestDocCli.Errors;
 using TestDocCli.Formatters;
 using TestDocCli.InputOutput;
 using TestDocCli.Model;
@@ -11,31 +12,46 @@ public class AppHostedService(
   IConsole console,
   IPromptFlow promptFlow,
   IOutputFormatterFactory formatterFactory,
-  IFileExporter fileExporter) : IHostedService
+  IFileExporter fileExporter,
+  IErrorReporter errorReporter) : IHostedService
 {
   private readonly IOptions<AppSettings> _settings = settings;
   private readonly IConsole _console = console;
   private readonly IPromptFlow _promptFlow = promptFlow;
   private readonly IOutputFormatterFactory _formatterFactory = formatterFactory;
   private readonly IFileExporter _fileExporter = fileExporter;
+  private readonly IErrorReporter _errorReporter = errorReporter;
 
   public Task StartAsync(CancellationToken cancellationToken)
   {
-    string format = _settings.Value.Format;
-    IOutputFormatter formatter = _formatterFactory.Create(format);
+    try
+    {
+      string format = _settings.Value.Format;
+      IOutputFormatter formatter = _formatterFactory.Create(format);
 
-    TestDocument testDocument = _promptFlow.CollectTestDocument();
-    string output = formatter.Format(testDocument);
+      TestDocument testDocument = _promptFlow.CollectTestDocument();
+      string output = formatter.Format(testDocument);
 
-    _console.WriteLine(output);
+      _console.WriteLine(output);
 
-    string directory = string.IsNullOrWhiteSpace(_settings.Value.OutputDirectory)
-      ? Directory.GetCurrentDirectory()
-      : _settings.Value.OutputDirectory;
+      string directory = string.IsNullOrWhiteSpace(_settings.Value.OutputDirectory)
+        ? Directory.GetCurrentDirectory()
+        : _settings.Value.OutputDirectory;
 
-    // TODO: replace string.Empty with testDocument.Title
-    string savedPath = _fileExporter.Save(output, formatter.FileExtension, string.Empty, directory);
-    _console.WriteLine($"Saved to: {savedPath}");
+      // TODO: replace string.Empty with testDocument.Title
+      string savedPath = _fileExporter.Save(output, formatter.FileExtension, string.Empty, directory);
+      _console.WriteLine($"Saved to: {savedPath}");
+    }
+    catch (KnownUserErrorException knownUserError)
+    {
+      _errorReporter.Write("ERROR", knownUserError.Message);
+      Environment.ExitCode = knownUserError.ExitCode;
+    }
+    catch (Exception exception)
+    {
+      _errorReporter.Write("UNEXPECTED", exception.Message);
+      Environment.ExitCode = 1;
+    }
 
     return Task.CompletedTask;
   }

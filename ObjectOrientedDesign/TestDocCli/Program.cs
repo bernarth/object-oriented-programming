@@ -1,28 +1,36 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TestDocCli.AppCore;
-using TestDocCli.InputOutput;
+using TestDocCli.Errors;
+using TestDocCli.Extensions;
 
-HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+try
+{
+  HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
-// Bind simple options from command-line
-builder.Services.Configure<AppSettings>(builder.Configuration);
+  builder.Services.Configure<AppSettings>(builder.Configuration);
+  builder.Services.AddServices();
+  builder.Services.AddErrorServices();
+  builder.Services.AddHostedService<AppHostedService>();
 
-// Core services
-builder.Services.AddSingleton<IConsole, SystemConsole>();
-builder.Services.AddSingleton<IInputReader, ConsoleInputReader>();
-builder.Services.AddSingleton<IOutputFormatterFactory, OutputFormatterFactory>();
-builder.Services.AddSingleton<IPromptFlow, PromptFlow>();
-builder.Services.AddSingleton<IFileExporter, FileExporter>();
-
-// App host
-builder.Services.AddHostedService<AppHostedService>();
-
-using IHost host = builder.Build();
-await host.RunAsync();
+  using IHost host = builder.Build();
+  await host.RunAsync();
+}
+catch (KnownUserErrorException knownUserError)
+{
+  var reporter = new ErrorReporter();
+  reporter.Write("ERROR", knownUserError.Message);
+  Environment.ExitCode = knownUserError.ExitCode;
+}
+catch (Exception exception)
+{
+  var reporter = new ErrorReporter();
+  reporter.Write("UNEXPECTED", exception.Message);
+  Environment.ExitCode = 1;
+}
 
 // We are defining the following
 // WE have a IConsole where we can define the console operations for write and read
 //  - The read opeartion might complex so, we created a different class that will implement IConsole (or not) to perform the read operation
 
-// TODO: Create the diagram of this project.
+// TODO: [UPDATE] Create the diagram of this project v2.
