@@ -3,9 +3,14 @@ using BugTracker.Infrastructure;
 
 namespace BugTracker.Application;
 
-public class BugTrackerService(BugRepository repository)
+public class BugTrackerService : IBugTrackerService
 {
-  private readonly BugRepository _repository = repository;
+  private readonly IBugRepository _repository;
+  
+  public BugTrackerService(IBugRepository repository)
+  {
+    _repository = repository;
+  }
 
   public Bug ReportNew(string title, Severity severity)
   {
