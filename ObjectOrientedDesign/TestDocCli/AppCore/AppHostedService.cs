@@ -45,7 +45,7 @@ public class AppHostedService(
     catch (KnownUserErrorException knownUserError)
     {
       _errorReporter.Write("ERROR", knownUserError.Message);
-      Environment.ExitCode = knownUserError.ExitCode;
+      Environment.ExitCode = (int)knownUserError.ExitCode;
     }
     catch (Exception exception)
     {
