@@ -2,16 +2,10 @@ using BugTracker.Domain;
 
 namespace BugTracker.Infrastructure;
 
-public class BugRepository
+public sealed class BugRepository() : IRepository
 {
-  private readonly List<Bug> _items;
-  private int _nextId;
-
-  public BugRepository()
-  {
-    _items = [];
-    _nextId = 1;
-  }
+  private readonly List<Bug> _items = [];
+  private int _nextId = 1;
 
   public Bug Add(Bug bug)
   {
