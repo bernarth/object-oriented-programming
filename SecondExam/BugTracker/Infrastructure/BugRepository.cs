@@ -1,8 +1,10 @@
 using BugTracker.Domain;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BugTracker.Infrastructure;
 
-public class BugRepository
+public class BugRepository : IBugRepository
 {
   private readonly List<Bug> _items;
   private int _nextId;
@@ -23,24 +25,20 @@ public class BugRepository
 
   public Bug? GetById(int id)
   {
-    for (int i = 0; i < _items.Count; i++)
-    {
-      if (_items[i].Id == id)
-      {
-        return _items[i];
-      }
-    }
-
-    return null;
+    return _items.FirstOrDefault(b => b.Id == id);
   }
 
   public List<Bug> GetAll()
   {
-    return _items;
+    return new List<Bug>(_items);
   }
 
-  public void Save(Bug bug)
+  public void Update(Bug bug)
   {
-    // TODO: In-memory only.
+    int index = _items.FindIndex(b => b.Id == bug.Id);
+    if (index != -1)
+    {
+      _items[index] = bug;
+    }
   }
 }
